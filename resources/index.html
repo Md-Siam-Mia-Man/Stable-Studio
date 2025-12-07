@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" class="dark"> <!-- Default to Dark Mode -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stable Studio</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/icon.svg">
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body
+    class="h-screen w-screen flex flex-col overflow-hidden bg-light-bg dark:bg-dark-bg text-dark-bg dark:text-cream font-sans transition-colors duration-200">
+
+    <!-- Header -->
+    <header
+        class="h-16 shrink-0 bg-light-surface dark:bg-dark-surface border-b border-black/5 dark:border-white/5 flex items-center justify-between px-6 z-50">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+            <div
+                class="w-8 h-8 rounded-lg bg-gold-gradient flex items-center justify-center shadow-lg shadow-bright-gold/20">
+                <img src="./assets/icons/icon.svg" class="w-5 h-5" alt="Logo">
+            </div>
+            <span class="font-bold text-xl tracking-tight dark:text-white">Stable <span
+                    class="text-transparent bg-clip-text bg-gold-gradient">Studio</span></span>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-4">
+            <!-- Theme Toggle -->
+            <div class="flex bg-black/5 dark:bg-white/5 rounded-full p-1 border border-black/5 dark:border-white/5">
+                <button
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                    onclick="toggleTheme('light')" title="Light Mode">
+                    <span class="material-symbols-rounded text-lg">light_mode</span>
+                </button>
+                <button
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                    onclick="toggleTheme('dark')" title="Dark Mode">
+                    <span class="material-symbols-rounded text-lg">dark_mode</span>
+                </button>
+            </div>
+
+            <div class="h-6 w-px bg-black/10 dark:bg-white/10"></div>
+
+            <button
+                class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium"
+                onclick="openOutputFolder()">
+                <span class="material-symbols-rounded text-lg text-bright-gold-2">folder_open</span>
+                <span class="hidden sm:inline">Outputs</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex overflow-hidden">
+
+        <!-- LEFT PANEL: Settings -->
+        <aside
+            class="w-[350px] shrink-0 bg-light-surface dark:bg-dark-surface border-r border-black/5 dark:border-white/5 flex flex-col overflow-y-auto z-40 relative custom-scrollbar">
+            <div class="p-5 flex flex-col gap-6">
+
+                <!-- Prompt -->
+                <div class="input-group">
+                    <div class="flex justify-between items-end mb-2">
+                        <label class="label-text">Prompt</label>
+                        <button class="text-xs text-bright-gold-2 font-bold hover:underline uppercase"
+                            onclick="$('prompt').value=''">Clear</button>
+                    </div>
+                    <textarea id="prompt" class="input-field h-32 resize-none"
+                        placeholder="Describe your imagination..."></textarea>
+                </div>
+
+                <!-- Negative -->
+                <div class="input-group">
+                    <label class="label-text mb-2 block">Negative Prompt</label>
+                    <textarea id="negative-prompt" class="input-field h-20 resize-none text-xs"
+                        placeholder="Bad quality, blurry..."></textarea>
+                </div>
+
+                <div class="h-px bg-black/5 dark:bg-white/5 w-full"></div>
+
+                <!-- Model Selector (Custom) -->
+                <div class="input-group relative z-30">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="label-text">Checkpoint</label>
+                        <button class="text-gray-400 hover:text-bright-gold-2 transition-colors" onclick="loadModels()"
+                            title="Refresh">
+                            <span class="material-symbols-rounded text-lg">sync</span>
+                        </button>
+                    </div>
+
+                    <div class="custom-dropdown" id="model-dropdown">
+                        <button class="dropdown-btn">
+                            <span class="truncate" id="selected-model-text">Select Model</span>
+                            <span class="material-symbols-rounded">expand_more</span>
+                        </button>
+                        <div class="dropdown-content hidden">
+                            <ul id="model-list">
+                                <li class="px-3 py-2 text-xs opacity-50">Scanning...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensions -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="input-group">
+                        <label class="label-text mb-2 block">Width</label>
+                        <div class="relative">
+                            <input type="number" id="width" value="512" step="64"
+                                class="input-field pl-8 text-center font-mono">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold opacity-30">W</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="label-text mb-2 block">Height</label>
+                        <div class="relative">
+                            <input type="number" id="height" value="512" step="64"
+                                class="input-field pl-8 text-center font-mono">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold opacity-30">H</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sliders -->
+                <div
+                    class="bg-black/5 dark:bg-white/5 rounded-xl p-4 flex flex-col gap-4 border border-black/5 dark:border-white/5">
+                    <!-- Steps -->
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-2">
+                            <span class="opacity-70">Steps</span>
+                            <span id="steps-val" class="text-bright-gold-2">20</span>
+                        </div>
+                        <input type="range" id="steps" min="1" max="100" value="20" class="slider"
+                            oninput="$('steps-val').innerText=this.value">
+                    </div>
+                    <!-- CFG -->
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-2">
+                            <span class="opacity-70">CFG Scale</span>
+                            <span id="cfg-val" class="text-bright-gold-2">7.0</span>
+                        </div>
+                        <input type="range" id="cfg" min="1" max="30" value="7.0" step="0.5" class="slider"
+                            oninput="$('cfg-val').innerText=this.value">
+                    </div>
+                </div>
+
+                <!-- Seed -->
+                <div class="input-group">
+                    <label class="label-text mb-2 block">Seed</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="seed" value="-1" class="input-field font-mono"
+                            placeholder="-1 (Random)">
+                        <button
+                            class="p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-gold-gradient hover:text-black transition-all"
+                            onclick="$('seed').value = -1" title="Randomize">
+                            <span class="material-symbols-rounded">casino</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Generate Footer -->
+            <div
+                class="sticky bottom-0 p-5 bg-light-surface dark:bg-dark-surface border-t border-black/5 dark:border-white/5 mt-auto">
+                <button id="generate-btn" class="btn-primary w-full group" onclick="generateImage()">
+                    <span class="material-symbols-rounded group-hover:animate-spin">auto_awesome</span>
+                    <span>Generate</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- CENTER PANEL: Canvas -->
+        <section class="flex-1 relative bg-[#e5e5e5] dark:bg-[#0a0a0a] flex flex-col overflow-hidden">
+            <!-- Grid Pattern -->
+            <div class="absolute inset-0 opacity-5 pointer-events-none"
+                style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 24px 24px;">
+            </div>
+
+            <!-- Canvas -->
+            <div id="canvas-wrapper"
+                class="w-full h-full relative z-10 cursor-grab active:cursor-grabbing flex items-center justify-center overflow-hidden">
+                <div id="canvas-transform" class="transition-transform duration-100 ease-out origin-center">
+
+                    <!-- Placeholder -->
+                    <div id="placeholder" class="flex flex-col items-center opacity-30 select-none">
+                        <span class="material-symbols-rounded text-8xl mb-4">landscape</span>
+                        <p class="text-xl font-bold tracking-[0.3em]">READY</p>
+                    </div>
+
+                    <!-- Image -->
+                    <img id="result-image" class="shadow-2xl ring-4 ring-white dark:ring-white/10 hidden max-w-none"
+                        draggable="false">
+                </div>
+            </div>
+
+            <!-- Floating Controls -->
+            <div class="absolute top-6 right-6 flex flex-col gap-3 z-20">
+                <button class="floating-btn" onclick="resetCanvas()" title="Reset View">
+                    <span class="material-symbols-rounded">center_focus_strong</span>
+                </button>
+                <div class="h-px bg-black/10 dark:bg-white/10 w-full"></div>
+                <button class="floating-btn hover:text-red-500" onclick="deleteCurrent()" title="Delete">
+                    <span class="material-symbols-rounded">delete</span>
+                </button>
+                <button class="floating-btn hover:text-green-500" onclick="saveCurrent()" title="Save Copy">
+                    <span class="material-symbols-rounded">save</span>
+                </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div id="progress-container"
+                class="absolute bottom-10 left-1/2 -translate-x-1/2 w-[400px] bg-light-surface/90 dark:bg-dark-surface/90 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-2xl translate-y-[200%] transition-transform duration-500 z-30">
+                <div class="flex justify-between items-center mb-2">
+                    <span id="status-text"
+                        class="text-xs font-mono font-bold text-bright-gold-2 animate-pulse">Initializing...</span>
+                    <span id="progress-percent" class="text-xs font-black font-mono">0%</span>
+                </div>
+                <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gold-gradient transition-all duration-200 w-0"></div>
+                </div>
+                <div id="current-log-line" class="mt-2 text-[10px] opacity-40 font-mono truncate">Waiting...</div>
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL: Advanced -->
+        <aside
+            class="w-72 shrink-0 bg-light-surface dark:bg-dark-surface border-l border-black/5 dark:border-white/5 flex flex-col z-40 relative custom-scrollbar">
+            <div class="p-5 flex flex-col gap-5 h-full overflow-y-auto">
+                <div class="flex items-center gap-2 text-bright-gold-2 mb-2">
+                    <span class="material-symbols-rounded">tune</span>
+                    <span class="text-xs font-bold uppercase tracking-wider">Advanced Config</span>
+                </div>
+
+                <!-- Sampler -->
+                <div class="input-group relative z-20">
+                    <label class="label-text mb-2 block">Sampling Method</label>
+                    <div class="custom-dropdown" id="sampler-dropdown" data-value="euler_a">
+                        <button class="dropdown-btn">
+                            <span class="truncate">Euler A</span>
+                            <span class="material-symbols-rounded">expand_more</span>
+                        </button>
+                        <div class="dropdown-content hidden">
+                            <ul>
+                                <li data-value="euler_a" class="selected">Euler A</li>
+                                <li data-value="euler">Euler</li>
+                                <li data-value="heun">Heun</li>
+                                <li data-value="dpm2">DPM2</li>
+                                <li data-value="dpm++2s_a">DPM++ 2S a</li>
+                                <li data-value="dpm++2m">DPM++ 2M</li>
+                                <li data-value="lcm">LCM</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheduler -->
+                <div class="input-group relative z-10">
+                    <label class="label-text mb-2 block">Scheduler</label>
+                    <div class="custom-dropdown" id="scheduler-dropdown" data-value="discrete">
+                        <button class="dropdown-btn">
+                            <span class="truncate">Discrete</span>
+                            <span class="material-symbols-rounded">expand_more</span>
+                        </button>
+                        <div class="dropdown-content hidden">
+                            <ul>
+                                <li data-value="discrete" class="selected">Discrete</li>
+                                <li data-value="karras">Karras</li>
+                                <li data-value="exponential">Exponential</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="label-text mb-2 block">Threads (-1 Auto)</label>
+                    <input type="number" id="threads" value="-1" class="input-field text-xs">
+                </div>
+
+                <div class="h-px bg-black/5 dark:bg-white/5 w-full my-2"></div>
+
+                <!-- Checkboxes -->
+                <div class="flex flex-col gap-3">
+                    <label class="checkbox-wrapper">
+                        <span>Verbose Log</span>
+                        <input type="checkbox" id="verbose" checked>
+                        <div class="checkmark"></div>
+                    </label>
+                    <label class="checkbox-wrapper">
+                        <span>Canny Edge</span>
+                        <input type="checkbox" id="canny">
+                        <div class="checkmark"></div>
+                    </label>
+                    <label class="checkbox-wrapper">
+                        <span>CUDA RNG</span>
+                        <input type="checkbox" id="rng-cuda" checked>
+                        <div class="checkmark"></div>
+                    </label>
+                </div>
+
+                <!-- Console -->
+                <div class="mt-auto pt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="label-text">Live Console</label>
+                        <button class="text-[10px] uppercase opacity-50 hover:opacity-100"
+                            onclick="$('cmd-logs').value=''">Clear</button>
+                    </div>
+                    <textarea id="cmd-logs"
+                        class="input-field h-40 font-mono text-[10px] leading-tight text-green-500 bg-black border-none"
+                        readonly></textarea>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="js/neutralino.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
