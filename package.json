@@ -1,0 +1,24 @@
+{
+  "name": "stable-studio",
+  "version": "1.0.0",
+  "description": "A high-performance Vulkan-based Stable Diffusion GUI.",
+  "main": "index.html",
+  "author": "Md Siam Mia",
+  "license": "MIT",
+  "scripts": {
+    "init": "node helpers/init.js",
+    "start": "neu run",
+    "dev": "neu run -- --debug-mode",
+    "build:css": "npx tailwindcss -i ./src/input.css -o ./resources/css/styles.css --minify",
+    "build": "node helpers/builder.js",
+    "clean": "node helpers/cleanup.js",
+    "clean:full": "node helpers/cleanup.js --deps"
+  },
+  "devDependencies": {
+    "@neutralinojs/neu": "^11.6.0",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "rimraf": "^6.1.2",
+    "tailwindcss": "^3.4.17"
+  }
+}
