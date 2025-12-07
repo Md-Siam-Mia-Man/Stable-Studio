@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../assets/fonts/Poppins.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Material Symbols Rounded';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../assets/icons/MaterialSymbolsRounded.woff2') format('woff2');
+}
+
+/* Base Resets & Font Application */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+input,
+button,
+textarea,
+select {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Material Icons Class */
+.material-symbols-rounded {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+
+    /* --- labels --- */
+    .label-text {
+        @apply text-[11px] font-bold uppercase tracking-wider opacity-60;
+    }
+
+    /* --- Inputs --- */
+    .input-field {
+        @apply w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-3 py-2.5 outline-none transition-all duration-200 text-sm;
+        @apply focus:bg-white dark:focus:bg-black focus:border-bright-gold-2;
+    }
+
+    .input-field:focus {
+        box-shadow: 0 0 10px rgba(255, 218, 10, 0.2);
+    }
+
+    /* --- Buttons --- */
+    .btn-primary {
+        @apply h-11 rounded-xl bg-gold-gradient text-black font-bold text-sm tracking-wide shadow-lg shadow-bright-gold/20 flex items-center justify-center gap-2 transition-all duration-200;
+        @apply hover:brightness-110 hover:shadow-bright-gold/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    .floating-btn {
+        @apply w-9 h-9 rounded-full bg-light-surface dark:bg-dark-surface shadow-xl flex items-center justify-center border border-black/5 dark:border-white/10 text-gray-500 hover:text-black dark:hover:text-white transition-all hover:scale-110 active:scale-95;
+    }
+
+    /* --- Sliders --- */
+    .slider {
+        @apply appearance-none w-full h-1.5 bg-black/10 dark:bg-white/10 rounded-full outline-none cursor-pointer;
+    }
+
+    .slider::-webkit-slider-thumb {
+        @apply appearance-none w-4 h-4 rounded-full bg-gold-gradient border-2 border-white dark:border-dark-surface shadow-md hover:scale-125 transition-transform;
+    }
+
+    /* --- Custom Dropdowns --- */
+    .custom-dropdown {
+        @apply relative w-full;
+    }
+
+    .dropdown-btn {
+        @apply w-full flex items-center justify-between bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-3 py-2.5 text-sm transition-all;
+        @apply hover:bg-black/10 dark:hover:bg-white/10 focus:border-bright-gold-2;
+    }
+
+    /* Fixed: Removed 'hidden' from @apply so JS can toggle it */
+    .dropdown-content {
+        @apply absolute left-0 right-0 mt-2 bg-light-surface dark:bg-[#151515] border border-black/5 dark:border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto;
+    }
+
+    /* Animation triggers when .hidden is removed */
+    .dropdown-content:not(.hidden) {
+        animation: dropIn 0.15s ease-out;
+    }
+
+    .dropdown-content ul li {
+        @apply px-4 py-2.5 text-xs cursor-pointer border-b border-black/5 dark:border-white/5 last:border-0 hover:bg-bright-gold-2/10 hover:text-bright-gold-2 transition-colors;
+    }
+
+    .dropdown-content ul li.selected {
+        @apply text-bright-gold-2 font-bold bg-bright-gold-2/5;
+    }
+
+    /* --- Checkboxes --- */
+    .checkbox-wrapper {
+        @apply flex items-center justify-between cursor-pointer;
+    }
+
+    .checkbox-wrapper span {
+        @apply text-xs font-bold opacity-70 transition-opacity;
+    }
+
+    .checkbox-wrapper:hover span {
+        @apply opacity-100;
+    }
+
+    .checkbox-wrapper input {
+        @apply hidden;
+    }
+
+    .checkmark {
+        @apply w-4 h-4 rounded border-2 border-black/20 dark:border-white/20 relative transition-all;
+    }
+
+    .checkbox-wrapper input:checked~.checkmark {
+        @apply bg-gold-gradient border-transparent;
+    }
+
+    .checkmark::after {
+        content: '';
+        @apply absolute hidden w-1 h-2 border-r-2 border-b-2 border-black left-[5px] top-[1px] rotate-45;
+    }
+
+    .checkbox-wrapper input:checked~.checkmark::after {
+        @apply block;
+    }
+
+    /* --- Scrollbars --- */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        @apply bg-black/10 dark:bg-white/10 rounded-full;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-bright-gold-2;
+    }
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
