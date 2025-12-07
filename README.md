@@ -1,121 +1,154 @@
-# 🌋 Stable Studio (SDVulkan)
+# 🌋 Stable Studio
 
-> **A lightning-fast, Vulkan-powered Stable Diffusion Interface.**
-> *Created by Md Siam Mia.*
+<div align="center">
 
-![License](https://img.shields.io/badge/License-MIT-gold?style=for-the-badge)
-![Platform](https://img.shields.io/badge/Platform-Windows-black?style=for-the-badge&logo=windows)
-![Tech](https://img.shields.io/badge/Backend-Vulkan-red?style=for-the-badge&logo=vulkan)
+  <img src="resources/assets/icons/icon.png" alt="Logo" width="128" height="128">
 
-**Stable Studio** is a standalone, lightweight GUI for running Stable Diffusion locally on your GPU (AMD, NVIDIA, Intel) using the Vulkan backend. No complex Python setups, no heavy dependencies—just download and generate.
+  <h3>The Lightning-Fast, Local Stable Diffusion Experience</h3>
+  <p><i>Powered by Vulkan, Neutralinojs & Web Technologies.</i></p>
+
+  <!-- Badges -->
+  <p>
+    <a href="https://github.com/Md-Siam-Mia-Man/Stable-Studio/releases">
+      <img src="https://img.shields.io/github/v/release/Md-Siam-Mia-Man/Stable-Studio?style=for-the-badge&color=FF930F" alt="Version">
+    </a>
+    <a href="https://github.com/Md-Siam-Mia-Man/Stable-Studio/releases">
+      <img src="https://img.shields.io/github/downloads/Md-Siam-Mia-Man/Stable-Studio/total?style=for-the-badge&color=success" alt="Downloads">
+    </a>
+    <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Platform">
+    <img src="https://img.shields.io/github/license/Md-Siam-Mia-Man/Stable-Studio?style=for-the-badge&color=black" alt="License">
+  </p>
+
+  <!-- Tech Stack Badges -->
+  <p>
+    <img src="https://img.shields.io/badge/Backend-Vulkan-AC162C?style=for-the-badge&logo=vulkan&logoColor=white" alt="Vulkan">
+    <img src="https://img.shields.io/badge/Frontend-Neutralinojs-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Neutralinojs">
+    <img src="https://img.shields.io/badge/Style-TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind">
+  </p>
+
+</div>
+
+---
+
+## 📖 About
+
+**Stable Studio** is a standalone, lightweight GUI for running Stable Diffusion locally on your GPU. Unlike other implementations that require heavy Python environments (Conda/venv) or specific CUDA hardware, Stable Studio utilizes the **Vulkan** backend.
+
+This means it runs natively on virtually **any modern GPU** (AMD, NVIDIA, Intel Arc) out of the box.
 
 ---
 
 ## ✨ Key Features
 
-* **⚡ Vulkan Backend:** Runs natively on virtually any modern GPU (AMD/NVIDIA/Intel) without CUDA requirements.
-* **🎨 Premium UI:** A custom-designed **Gold & Black** interface with "Spring Light" and "Dark" modes.
-* **🖌️ Infinite Canvas:** Pan, zoom, and inspect your generations in real-time with a floating control HUD.
-* **🛠️ Professional Controls:**
-  * Full control over **Steps, CFG Scale, Seed, and Dimensions**.
-  * Advanced **Sampler** (Euler A, DPM++, LCM) and **Scheduler** selection.
-  * **Threads** and **Memory** optimization settings.
-* **📁 Custom Model Support:** Simply drop `.safetensors` or `.gguf` files into the `models/` folder.
-* **🚀 Production Ready:** Built-in installer generator, secure production mode (disabled DevTools), and auto-cleanup.
+### 🎨 **Premium UI/UX**
+
+* **Gold & Black Aesthetics:** A meticulously crafted interface with **Light** (default) and **Dark** modes.
+* **Infinite Canvas:** Pan (Right-Click) and Zoom (Scroll) to inspect every pixel of your generation.
+* **Floating HUD:** Quick controls to reset view, save, or delete images instantly.
+
+### ⚡ **High Performance**
+
+* **Vulkan Powered:** Runs on AMD Radeon, NVIDIA GeForce, and Intel Arc GPUs.
+* **Live Previews:** Watch the diffusion process step-by-step in real-time.
+* **Low Memory Footprint:** Built on Neutralinojs, consuming significantly less RAM than Electron-based apps.
+
+### 🛠️ **Professional Control**
+
+* **Advanced Parameters:** Full control over Steps, CFG Scale, Seed, and Dimensions.
+* **Sampler Selection:** Choose from Euler A, Euler, DPM++ (2S/2M), Heun, and LCM.
+* **Scheduler Control:** Discrete, Karras, and Exponential schedulers.
+* **Custom Models:** Support for `.safetensors`, `.gguf`, and `.bin` checkpoints.
 
 ---
 
 ## 📥 Installation
 
-### **For Users**
+### **Option 1: Windows Installer (Recommended)**
 
-1. Download the latest installer (`Stable_Studio_Setup.exe`) from the [Releases](#) page.
-2. Install the application.
-3. Place your Stable Diffusion models (`.safetensors`) in the `models/` folder (accessible via the folder icon in the app).
-4. Start generating!
+1. Go to the [**Releases**](https://github.com/Md-Siam-Mia-Man/Stable-Studio/releases) page.
+2. Download `Stable_Studio_Setup.exe`.
+3. Run the installer and launch the app.
+
+### **Option 2: Portable (Source)**
+
+1. Download `Stable-Studio.rar` from Releases.
+2. Extract the archive.
+3. Run `bin/neutralino-win_x64.exe`.
+
+> **Note:** On first launch, the `models/` folder will be empty. You must download a Stable Diffusion checkpoint (e.g., from Civitai or HuggingFace) and place the `.safetensors` file into the `models` folder.
 
 ---
 
 ## 💻 Development Setup
 
-To build this project from source:
+Want to contribute or build it yourself?
 
 ### **Prerequisites**
 
 * [Node.js](https://nodejs.org/) (v18+)
 * [Neutralinojs CLI](https://neutralino.js.org/) (`npm install -g @neutralinojs/neu`)
-* [NSIS](https://nsis.sourceforge.io/) (For building the installer)
+* [NSIS](https://nsis.sourceforge.io/) (Required for building the installer)
 
-### **1. Clone & Initialize**
+### **1. Initialization**
 
-```bash
-git clone https://github.com/yourusername/SDVulkan.git
-cd SDVulkan
+Clone the repo and run the magic init script. This installs dependencies and sets up the folder structure.
 
-# Installs dependencies and sets up folder structure
+```powershell
+git clone https://github.com/Md-Siam-Mia-Man/Stable-Studio.git
+cd Stable-Studio
 npm install
 npm run init
 ```
 
-### **2. Run in Development Mode**
+### **2. Running (Dev Mode)**
 
 Starts the app with Hot-Reload and DevTools enabled.
 
-```bash
+```powershell
 npm start
 ```
 
-### **3. Build for Production**
+### **3. Building (Production)**
 
-Compiles CSS, bundles the binary, and creates the Windows Installer (`.exe`).
+Compiles CSS, bundles the binary, and creates the Windows Installer.
 
-```bash
+```powershell
 npm run build
 ```
 
-*Artifacts will be located in the `release/` folder.*
+*Output will be in the `release/` folder.*
 
 ---
 
 ## 📂 Project Structure
 
 ```plaintext
-/SDVulkan
-├── 📁 backend/          # Vulkan executables & DLLs
-├── 📁 models/           # Checkpoints (Ignored by Git)
-├── 📁 outputs/          # Generated Images (Ignored by Git)
-├── 📁 resources/        # Frontend Source
-│   ├── 📁 assets/       # Fonts & Icons
-│   ├── 📁 css/          # Compiled Styles
-│   ├── 📁 js/           # Application Logic
-│   └── index.html       # Entry Point
-├── 📁 src/              # Tailwind Input CSS
-└── 📁 helpers/          # Build & Init Scripts
+/Stable Studio
+├── 📁 backend/          # ⚙️ Vulkan binaries (sd.exe & dlls)
+├── 📁 models/           # 📦 Checkpoints (User provided)
+├── 📁 outputs/          # 🖼️ Generated images
+├── 📁 release/          # 📦 Final built installers
+├── 📁 resources/        # 🎨 Frontend Source
+│   ├── 📁 assets/       #    ├── Icons & Fonts (Poppins)
+│   ├── 📁 css/          #    ├── Compiled Styles
+│   ├── 📁 js/           #    ├── App Logic (main.js)
+│   └── index.html       #    └── Entry Point
+├── 📁 src/              # 📝 Tailwind Input CSS
+└── 📁 helpers/          # 🛠️ Build & Init Scripts
 ```
 
 ---
 
-## 📜 License
+## 🤝 Credits
+
+* **Author:** [Md Siam Mia](https://github.com/Md-Siam-Mia-Man)
+* **Backend:** [Stable-Diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp)
+* **Frontend Framework:** [Neutralinojs](https://neutralino.js.org/)
+
+---
+
+## 📄 License
 
 This project is licensed under the **MIT License**.
+
 Copyright (c) 2025 **Md Siam Mia**.
-
-See the [LICENSE](LICENSE) file for details.
-
-```
-
-### Verification
-
-1.  **Check `.gitignore`**: Ensure `models/` and `outputs/` are ignored so you don't accidentally push 2GB+ files.
-2.  **Check `package.json`**: Ensure `"author": "Md Siam Mia"` is present.
-3.  **Check `LICENSE`**: Ensure the year and name are correct.
-
-**Git Commands to Publish:**
-
-```powershell
-git init
-git add .
-git commit -m "Initial commit - Stable Studio v1.0.0"
-git branch -M main
-# git remote add origin https://github.com/USERNAME/REPO_NAME.git
-# git push -u origin main
