@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build Artifacts
+dist/
+release/
+resources/css/styles.css
+
+# Neutralino Logs & Storage
+neutralinojs.log
+.tmp/
+.neu/
+
+# User Generated Content
+outputs/*.png
+outputs/*.jpg
+outputs/*.txt
+
+# Large Model Files
+models/*.safetensors
+models/*.ckpt
+models/*.bin
+models/*.gguf
+models/*.pth
+
+# Temporary Files
+temp/*
+!temp/.gitkeep
+
+# OS Specific
+.DS_Store
+Thumbs.db
