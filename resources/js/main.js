@@ -16,6 +16,7 @@ let state = {
     isGenerating: false,
     currentOutput: null,
     previewInterval: null,
+    lastObjectUrl: null,
     canvas: { scale: 1, panning: false, pointX: 0, pointY: 0, startX: 0, startY: 0 }
 };
 
@@ -360,7 +361,12 @@ function startPreviewLoop(path) {
     state.previewInterval = setInterval(async () => {
         try {
             let buf = await Neutralino.filesystem.readBinaryFile(path);
+            // If stopped during read, abort
+            if (!state.previewInterval) return;
+
+            if (state.lastObjectUrl) URL.revokeObjectURL(state.lastObjectUrl);
             let url = URL.createObjectURL(new Blob([buf], { type: 'image/png' }));
+            state.lastObjectUrl = url;
             const img = $('result-image');
             img.src = url;
             img.classList.remove('hidden');
@@ -372,12 +378,18 @@ function startPreviewLoop(path) {
 function stopPreviewLoop() {
     if (state.previewInterval) clearInterval(state.previewInterval);
     state.previewInterval = null;
+    if (state.lastObjectUrl) {
+        URL.revokeObjectURL(state.lastObjectUrl);
+        state.lastObjectUrl = null;
+    }
 }
 
 async function showFinalImage(path) {
     try {
         let buf = await Neutralino.filesystem.readBinaryFile(path);
+        if (state.lastObjectUrl) URL.revokeObjectURL(state.lastObjectUrl);
         let url = URL.createObjectURL(new Blob([buf], { type: 'image/png' }));
+        state.lastObjectUrl = url;
         const img = $('result-image');
         img.src = url;
         img.classList.remove('hidden');
