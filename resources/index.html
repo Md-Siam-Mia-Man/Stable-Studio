@@ -31,12 +31,12 @@
             <div class="flex bg-black/5 dark:bg-white/5 rounded-full p-1 border border-black/5 dark:border-white/5">
                 <button
                     class="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                    onclick="toggleTheme('light')" title="Light Mode">
+                    onclick="toggleTheme('light')" title="Light Mode" aria-label="Switch to Light Mode">
                     <span class="material-symbols-rounded text-lg">light_mode</span>
                 </button>
                 <button
                     class="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                    onclick="toggleTheme('dark')" title="Dark Mode">
+                    onclick="toggleTheme('dark')" title="Dark Mode" aria-label="Switch to Dark Mode">
                     <span class="material-symbols-rounded text-lg">dark_mode</span>
                 </button>
             </div>
@@ -63,7 +63,7 @@
                 <!-- Prompt -->
                 <div class="input-group">
                     <div class="flex justify-between items-end mb-2">
-                        <label class="label-text">Prompt</label>
+                        <label class="label-text" for="prompt">Prompt</label>
                         <button class="text-xs text-bright-gold-2 font-bold hover:underline uppercase"
                             onclick="$('prompt').value=''">Clear</button>
                     </div>
@@ -73,7 +73,7 @@
 
                 <!-- Negative -->
                 <div class="input-group">
-                    <label class="label-text mb-2 block">Negative Prompt</label>
+                    <label class="label-text mb-2 block" for="negative-prompt">Negative Prompt</label>
                     <textarea id="negative-prompt" class="input-field h-20 resize-none text-xs"
                         placeholder="Bad quality, blurry..."></textarea>
                 </div>
@@ -83,15 +83,15 @@
                 <!-- Model Selector (Custom) -->
                 <div class="input-group relative z-30">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="label-text">Checkpoint</label>
+                        <label class="label-text" id="checkpoint-label">Checkpoint</label>
                         <button class="text-gray-400 hover:text-bright-gold-2 transition-colors" onclick="loadModels()"
-                            title="Refresh">
+                            title="Refresh" aria-label="Refresh Models">
                             <span class="material-symbols-rounded text-lg">sync</span>
                         </button>
                     </div>
 
                     <div class="custom-dropdown" id="model-dropdown">
-                        <button class="dropdown-btn">
+                        <button class="dropdown-btn" aria-labelledby="checkpoint-label selected-model-text" aria-haspopup="listbox">
                             <span class="truncate" id="selected-model-text">Select Model</span>
                             <span class="material-symbols-rounded">expand_more</span>
                         </button>
@@ -106,7 +106,7 @@
                 <!-- Dimensions -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="input-group">
-                        <label class="label-text mb-2 block">Width</label>
+                        <label class="label-text mb-2 block" for="width">Width</label>
                         <div class="relative">
                             <input type="number" id="width" value="512" step="64"
                                 class="input-field pl-8 text-center font-mono">
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label class="label-text mb-2 block">Height</label>
+                        <label class="label-text mb-2 block" for="height">Height</label>
                         <div class="relative">
                             <input type="number" id="height" value="512" step="64"
                                 class="input-field pl-8 text-center font-mono">
@@ -148,13 +148,13 @@
 
                 <!-- Seed -->
                 <div class="input-group">
-                    <label class="label-text mb-2 block">Seed</label>
+                    <label class="label-text mb-2 block" for="seed">Seed</label>
                     <div class="flex gap-2">
                         <input type="number" id="seed" value="-1" class="input-field font-mono"
                             placeholder="-1 (Random)">
                         <button
                             class="p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-gold-gradient hover:text-black transition-all"
-                            onclick="$('seed').value = -1" title="Randomize">
+                            onclick="$('seed').value = -1" title="Randomize" aria-label="Randomize Seed">
                             <span class="material-symbols-rounded">casino</span>
                         </button>
                     </div>
@@ -192,20 +192,20 @@
 
                     <!-- Image -->
                     <img id="result-image" class="shadow-2xl ring-4 ring-white dark:ring-white/10 hidden max-w-none"
-                        draggable="false">
+                        draggable="false" alt="Generated Result">
                 </div>
             </div>
 
             <!-- Floating Controls -->
             <div class="absolute top-6 right-6 flex flex-col gap-3 z-20">
-                <button class="floating-btn" onclick="resetCanvas()" title="Reset View">
+                <button class="floating-btn" onclick="resetCanvas()" title="Reset View" aria-label="Reset View">
                     <span class="material-symbols-rounded">center_focus_strong</span>
                 </button>
                 <div class="h-px bg-black/10 dark:bg-white/10 w-full"></div>
-                <button class="floating-btn hover:text-red-500" onclick="deleteCurrent()" title="Delete">
+                <button class="floating-btn hover:text-red-500" onclick="deleteCurrent()" title="Delete" aria-label="Delete Image">
                     <span class="material-symbols-rounded">delete</span>
                 </button>
-                <button class="floating-btn hover:text-green-500" onclick="saveCurrent()" title="Save Copy">
+                <button class="floating-btn hover:text-green-500" onclick="saveCurrent()" title="Save Copy" aria-label="Save Copy">
                     <span class="material-symbols-rounded">save</span>
                 </button>
             </div>
@@ -275,7 +275,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label class="label-text mb-2 block">Threads (-1 Auto)</label>
+                    <label class="label-text mb-2 block" for="threads">Threads (-1 Auto)</label>
                     <input type="number" id="threads" value="-1" class="input-field text-xs">
                 </div>
 
