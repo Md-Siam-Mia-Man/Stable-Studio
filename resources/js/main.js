@@ -12,7 +12,7 @@ const CONFIG = {
 
 const $ = (id) => document.getElementById(id);
 
-let state = {
+window.state = {
     isGenerating: false,
     currentOutput: null,
     previewInterval: null,
@@ -176,6 +176,13 @@ window.saveCurrent = async function () {
             defaultPath: 'favorite_image.png',
             filters: [{ name: 'Images', extensions: ['png'] }]
         });
+
+        // Fix Race Condition: Re-check if currentOutput still exists
+        if (!state.currentOutput) {
+             Neutralino.os.showMessageBox("Error", "Image was deleted before saving.", "OK", "ERROR");
+             return;
+        }
+
         if (savePath) {
             await Neutralino.filesystem.copy(state.currentOutput, savePath);
         }
@@ -305,6 +312,9 @@ window.resetCanvas = function () {
     updateTransform();
 };
 
+// Helper for tests
+window.state = state;
+
 async function resolvePath(p) {
     let abs = await Neutralino.filesystem.getAbsolutePath(p);
     return NL_OS === 'Windows' ? abs.replaceAll('/', '\\') : abs;
@@ -316,6 +326,7 @@ function setGenerating(bool) {
     const bar = $('progress-bar');
 
     if (bool) {
+        logBuffer = ""; // Reset buffer
         btn.disabled = true;
         btn.classList.add('opacity-70');
         $('progress-container').classList.remove('translate-y-[200%]');
@@ -329,18 +340,45 @@ function setGenerating(bool) {
     }
 }
 
+let logBuffer = "";
+let logFlushPending = false;
+
 function updateLogs(text) {
+    logBuffer += text;
+    if (!logFlushPending) {
+        logFlushPending = true;
+        requestAnimationFrame(flushLogs);
+    }
+}
+
+function flushLogs() {
+    if (!logBuffer) {
+        logFlushPending = false;
+        return;
+    }
+
     const log = $('cmd-logs');
-    log.value += text;
+    const chunk = logBuffer; // Snap current buffer
+    logBuffer = ""; // Clear
+    logFlushPending = false;
+
+    // Batch DOM update
+    log.value += chunk;
     log.scrollTop = log.scrollHeight;
 
-    const clean = text.replace(/\n/g, ' ').trim();
+    // Process Progress from chunk (find last match)
+    const clean = chunk.replace(/\n/g, ' ').trim();
     if (clean) $('current-log-line').innerText = clean.slice(-50);
 
-    const match = text.match(/(\d+)\/(\d+)/);
-    if (match) {
-        const cur = parseInt(match[1]);
-        const tot = parseInt(match[2]);
+    // Simple regex to find last step progress in the chunk
+    // Matches "Step X/Y" or "X/Y" patterns depending on backend, keeping original regex logic
+    // Original: text.match(/(\d+)\/(\d+)/) - finds FIRST match.
+    // We should probably look for matches in the whole chunk.
+    const matches = [...chunk.matchAll(/(\d+)\/(\d+)/g)];
+    if (matches.length > 0) {
+        const lastMatch = matches[matches.length - 1];
+        const cur = parseInt(lastMatch[1]);
+        const tot = parseInt(lastMatch[2]);
         if (tot > 0) {
             const pct = (cur / tot) * 100;
             $('progress-bar').style.width = `${pct}%`;
@@ -351,9 +389,7 @@ function updateLogs(text) {
 }
 
 function logLine(msg) {
-    const log = $('cmd-logs');
-    log.value += `\n[UI] ${msg}`;
-    log.scrollTop = log.scrollHeight;
+    updateLogs(`\n[UI] ${msg}`);
 }
 
 function startPreviewLoop(path) {
