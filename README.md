@@ -9,14 +9,14 @@
 
   <!-- Badges -->
   <p>
-    <a href="https://github.com/Md-Siam-Mia-Man/Stable-Studio/releases">
-      <img src="https://img.shields.io/github/v/release/Md-Siam-Mia-Man/Stable-Studio?style=for-the-badge&color=FF930F" alt="Version">
+    <a href="https://github.com/rootLocalGhost/Stable-Studio/releases">
+      <img src="https://img.shields.io/github/v/release/rootLocalGhost/Stable-Studio?style=for-the-badge&color=FF930F" alt="Version">
     </a>
-    <a href="https://github.com/Md-Siam-Mia-Man/Stable-Studio/releases">
-      <img src="https://img.shields.io/github/downloads/Md-Siam-Mia-Man/Stable-Studio/total?style=for-the-badge&color=success" alt="Downloads">
+    <a href="https://github.com/rootLocalGhost/Stable-Studio/releases">
+      <img src="https://img.shields.io/github/downloads/rootLocalGhost/Stable-Studio/total?style=for-the-badge&color=success" alt="Downloads">
     </a>
     <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Platform">
-    <img src="https://img.shields.io/github/license/Md-Siam-Mia-Man/Stable-Studio?style=for-the-badge&color=black" alt="License">
+    <img src="https://img.shields.io/github/license/rootLocalGhost/Stable-Studio?style=for-the-badge&color=black" alt="License">
   </p>
 
   <!-- Tech Stack Badges -->
@@ -65,7 +65,7 @@ This means it runs natively on virtually **any modern GPU** (AMD, NVIDIA, Intel 
 
 ### **Option 1: Windows Installer (Recommended)**
 
-1. Go to the [**Releases**](https://github.com/Md-Siam-Mia-Man/Stable-Studio/releases) page.
+1. Go to the [**Releases**](https://github.com/rootLocalGhost/Stable-Studio/releases) page.
 2. Download `Stable_Studio_Setup.exe`.
 3. Run the installer and launch the app.
 
@@ -94,7 +94,7 @@ Want to contribute or build it yourself?
 Clone the repo and run the magic init script. This installs dependencies and sets up the folder structure.
 
 ```powershell
-git clone https://github.com/Md-Siam-Mia-Man/Stable-Studio.git
+git clone https://github.com/rootLocalGhost/Stable-Studio.git
 cd Stable-Studio
 npm install
 npm run init
@@ -141,7 +141,7 @@ npm run build
 
 ## 🤝 Credits
 
-* **Author:** [Md Siam Mia](https://github.com/Md-Siam-Mia-Man)
+* **Author:** [Md Siam Mia](https://github.com/rootLocalGhost)
 * **Backend:** [Stable-Diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp)
 * **Frontend Framework:** [Neutralinojs](https://neutralino.js.org/)
 
