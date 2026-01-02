@@ -10,7 +10,7 @@
   Unicode True
 
   ; Installation Directory
-  InstallDir "$PROGRAMFILES64\Stable Studio"
+  InstallDir "C:\Stable-Studio"
   
   ; Registry key to check for directory (so if you install again, it will overwrite the old one)
   InstallDirRegKey HKLM "Software\StableStudio" "Install_Dir"
