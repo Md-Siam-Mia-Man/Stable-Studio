@@ -26,6 +26,7 @@ async function init() {
     setupCanvasEvents();
     setupDropdowns();
     loadTheme();
+    loadSettings(); // Feature: Persist Settings
 
     // Ensure directories
     try {
@@ -122,6 +123,9 @@ function setupDropdowns() {
 
             // Close
             content.classList.add('hidden');
+
+            // Persist (if setup)
+            if (typeof saveSettings === 'function') saveSettings();
         });
     });
 }
@@ -197,6 +201,12 @@ window.generateImage = async function () {
     const model = $('model-dropdown').getAttribute('data-value');
 
     if (!model) return Neutralino.os.showMessageBox("Error", "Select a model.", "OK", "ERROR");
+
+    // Fix Path Traversal: Validate model filename
+    if (model.includes('/') || model.includes('\\') || model.includes('..')) {
+        return Neutralino.os.showMessageBox("Error", "Invalid model name.", "OK", "ERROR");
+    }
+
     if (!prompt) return Neutralino.os.showMessageBox("Warning", "Enter a prompt.", "OK", "WARNING");
 
     setGenerating(true);
@@ -303,6 +313,84 @@ function setupCanvasEvents() {
     });
 }
 
+// --- Persistence ---
+function loadSettings() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('user_settings'));
+        if (saved) {
+            if (saved.width) $('width').value = saved.width;
+            if (saved.height) $('height').value = saved.height;
+            if (saved.steps) {
+                $('steps').value = saved.steps;
+                $('steps-val').innerText = saved.steps;
+            }
+            if (saved.cfg) {
+                $('cfg').value = saved.cfg;
+                $('cfg-val').innerText = saved.cfg;
+            }
+            if (saved.negativePrompt) $('negative-prompt').value = saved.negativePrompt;
+            if (saved.threads) $('threads').value = saved.threads;
+
+            // Checkboxes
+            if (saved.verbose !== undefined) $('verbose').checked = saved.verbose;
+            if (saved.canny !== undefined) $('canny').checked = saved.canny;
+            if (saved.rngCuda !== undefined) $('rng-cuda').checked = saved.rngCuda;
+
+            // Dropdowns
+            if (saved.sampler) updateDropdown('sampler-dropdown', saved.sampler);
+            if (saved.scheduler) updateDropdown('scheduler-dropdown', saved.scheduler);
+        }
+    } catch (e) { console.error("Failed to load settings", e); }
+
+    // Attach listeners
+    const inputs = ['width', 'height', 'steps', 'cfg', 'negative-prompt', 'threads'];
+    inputs.forEach(id => {
+        const el = $(id);
+        if (el) el.addEventListener('change', saveSettings);
+    });
+
+    const checks = ['verbose', 'canny', 'rng-cuda'];
+    checks.forEach(id => {
+        const el = $(id);
+        if (el) el.addEventListener('change', saveSettings);
+    });
+
+    // For sliders, 'change' is good, but 'input' is also used for UI update. 'change' is sufficient for storage.
+}
+
+function saveSettings() {
+    const settings = {
+        width: $('width').value,
+        height: $('height').value,
+        steps: $('steps').value,
+        cfg: $('cfg').value,
+        negativePrompt: $('negative-prompt').value,
+        threads: $('threads').value,
+        verbose: $('verbose').checked,
+        canny: $('canny').checked,
+        rngCuda: $('rng-cuda').checked,
+        sampler: $('sampler-dropdown').getAttribute('data-value'),
+        scheduler: $('scheduler-dropdown').getAttribute('data-value')
+    };
+    localStorage.setItem('user_settings', JSON.stringify(settings));
+}
+
+// Helper to update dropdown UI
+function updateDropdown(id, value) {
+    const dd = $(id);
+    if (!dd) return;
+    dd.setAttribute('data-value', value);
+
+    // Update display text
+    const list = dd.querySelector('ul');
+    const item = list.querySelector(`li[data-value="${value}"]`);
+    if (item) {
+        dd.querySelector('.truncate').innerText = item.innerText;
+        list.querySelectorAll('li').forEach(l => l.classList.remove('selected'));
+        item.classList.add('selected');
+    }
+}
+
 function updateTransform() {
     $('canvas-transform').style.transform = `translate(${state.canvas.pointX}px, ${state.canvas.pointY}px) scale(${state.canvas.scale})`;
 }
@@ -394,20 +482,34 @@ function logLine(msg) {
 
 function startPreviewLoop(path) {
     if (state.previewInterval) clearInterval(state.previewInterval);
+    let consecutiveErrors = 0;
+    const MAX_CONSECUTIVE_ERRORS = 100;
+
     state.previewInterval = setInterval(async () => {
         try {
             let buf = await Neutralino.filesystem.readBinaryFile(path);
             // If stopped during read, abort
             if (!state.previewInterval) return;
 
-            if (state.lastObjectUrl) URL.revokeObjectURL(state.lastObjectUrl);
+            consecutiveErrors = 0;
+
+            if (state.lastObjectUrl) {
+                URL.revokeObjectURL(state.lastObjectUrl);
+                state.lastObjectUrl = null;
+            }
             let url = URL.createObjectURL(new Blob([buf], { type: 'image/png' }));
             state.lastObjectUrl = url;
             const img = $('result-image');
             img.src = url;
             img.classList.remove('hidden');
             $('placeholder').classList.add('hidden');
-        } catch (e) { }
+        } catch (e) {
+            consecutiveErrors++;
+            if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+                console.error("Stopping preview loop due to persistent errors.");
+                stopPreviewLoop();
+            }
+        }
     }, 1000);
 }
 
